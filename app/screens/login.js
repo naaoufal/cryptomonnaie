@@ -1,37 +1,39 @@
 import React from 'react'
 import { Button, StyleSheet, Text, View, Dimensions } from 'react-native';
-//import * as Google from 'expo-google-app-auth';
+import * as Google from "expo-google-app-auth";
 
-export default function Login () {
-
-    async function signInWithGoogleAsync () {
+const Login = () => {
+    async function signInWithGoogleAsync() {
         try {
           const result = await Google.logInAsync({
-            //androidClientId: '61849560883-bdveo3lilhu2o18d05359vbbuhtect90.apps.googleusercontent.com',
-            iosClientId: '61849560883-bdveo3lilhu2o18d05359vbbuhtect90.apps.googleusercontent.com',
+            issuer : 'https://accounts.google.com',
+            androidClientId : '61849560883-0n0il9mn52q7qe5p66rjj91uatlfi00t.apps.googleusercontent.com',
+            redirectUrl : 'com.googleusercontent.apps.61849560883-0n0il9mn52q7qe5p66rjj91uatlfi00t:/oauth2redirect/google',
+            androidStandaloneAppClientId : '61849560883-0n0il9mn52q7qe5p66rjj91uatlfi00t.apps.googleusercontent.com',
+            //iosClientId: YOUR_CLIENT_ID_HERE,
             behavior : 'web',
-            scopes: ['profile', 'email'],
+            scopes : ['profile', 'email'],
           });
-      
+
           if (result.type === 'success') {
-            return result.accessToken;
+            console.log("gmail results" + result.user + result.user.familyName + result.user.email + result.user.photoUrl)
+            return social_signup(result.user.givenName, result.user.familyName, result.user.email, result.user.photoUrl, "google_login")
           } else {
             return { cancelled: true };
           }
         } catch (e) {
           return { error: true };
         }
-      }
-
+    }
+  
     return (
-        <View style={styles.container}>
-            <Button
-            title = "Sign With Google"
-            onPress = {() => signInWithGoogleAsync()}
-            />
-        </View>
-    )
-}
+      <View style={styles.container}>
+        <Button title="Login with Google" onPress={signInWithGoogleAsync} />
+      </View>
+    );
+};
+  
+  export default Login;
 
 const styles = StyleSheet.create({
     container: {
