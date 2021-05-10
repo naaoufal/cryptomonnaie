@@ -7,15 +7,6 @@
     "web": "expo start --web",
     "eject": "expo eject"
   },
-  "android": {
-    "package": "com.wusheengun.cryptomonnaie",
-    "versionCode": 1,
-    "config": {
-      "googleSignIn": {
-        "certificateHash": "61849560883-94arno4kfq2r0u5ihd14d1vjo5m1vcsg.apps.googleusercontent.com"
-      }
-    }
-  },
   "dependencies": {
     "@react-native-community/google-signin": "^5.0.0",
     "@react-native-firebase/app": "^11.4.1",
@@ -28,6 +19,7 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
     "react-native-login-twitter": "^3.0.4",
+    "react-native-table-component": "^1.2.1",
     "react-native-web": "~0.13.12",
     "react-router-native": "^5.2.0"
   },

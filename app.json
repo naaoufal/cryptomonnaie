@@ -24,7 +24,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.wusheengun.cryptomonnaie"
+      "package": "com.wusheengun.cryptomonnaie",
+      "versionCode": 1,
     },
     "web": {
       "favicon": "./assets/favicon.png"
