@@ -11,6 +11,10 @@ const LogintoHome = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
+    function toInscription () {
+        history.push("/Inscription")
+    }
+
     let loginUser = () => {
 
         firebase.auth().signInWithEmailAndPassword(email, password)
@@ -26,9 +30,7 @@ const LogintoHome = () => {
             var errorMessage = error.message;
             console.log(errorMessage);
             alert(errorMessage)
-        });
-   
-   
+        });  
     }
 
     return (
@@ -50,11 +52,17 @@ const LogintoHome = () => {
             <View
             style={styles.con}
             >
-            <Button 
-            title="Se Connecter"
-            style={styles.btn}
-            onPress={loginUser}
-            />
+                <Button 
+                title="Se Connecter"
+                onPress={loginUser}
+                />
+            </View>
+
+            <View>
+                <Button
+                title="Inscription"
+                onPress={toInscription}
+                />
             </View>
         </View>
     )
@@ -85,6 +93,6 @@ const styles = StyleSheet.create({
       borderWidth : 2,
     },
     con : {
-      paddingTop : 20
-    }
+      paddingTop : 20,
+    },
 });

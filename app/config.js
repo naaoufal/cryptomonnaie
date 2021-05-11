@@ -2,6 +2,7 @@ import firebase from '@firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
+
 const config = {
     apiKey: "AIzaSyCjgrrp7SzIesERAB0GUHqeJAzmD7yn3Q0",
     authDomain: "cryptomonnaie-740f1.firebaseapp.com",
