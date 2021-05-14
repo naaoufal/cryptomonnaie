@@ -10,28 +10,28 @@ import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-ta
 import { useEffect } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
 import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav';
+import AddBox from "@material-ui/icons/AddBox";
+import ArrowDownward from "@material-ui/icons/ArrowDownward";
 
 export default function Home () {
 
-    const [coins, setCoins] = useState("")
+    const [coins, setCoins] = React.useState([])
+    const state = {
+        symbols : []
+    }
     let history = useHistory()
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
-        {label: 'Apple', value: 'apple'},
-        {label: 'Banana', value: 'banana'}
-    ]);
 
     var user = firebase.auth().currentUser;
     //console.log(user.email)
 
     function renderCoinData () {
-        fetch("http://api.coincap.io/v2/assets").then(res => {
+        fetch("http://api.coincap.io/v2/assets")
+        .then(res => {
             return res.json()
-        }).then(data => {
-            //setCoins(data)
-            //console.log(data)
         })
+        .then(data => setState({symbols : data.symbol}))
     }
 
     // logOut function :
@@ -43,18 +43,13 @@ export default function Home () {
     }
 
     useEffect(() => {
-        renderCoinData()
-        //console.log(coins)
+        //renderCoinData()
+        console.log(state)
     }, [])
 
     return (
         <View>
             <NavBar>
-            <NavButton onPress={() => alert('Buttom to Return')}>
-            <NavButtonText>
-                {"Retour"}
-            </NavButtonText>
-            </NavButton>
             <NavTitle>
             {user.email}
             </NavTitle>
@@ -65,14 +60,16 @@ export default function Home () {
             </NavButton>
             </NavBar>
             <View style={styles.container}>
-                <DropDownPicker
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-                />
+                {/* {coins.map((i) => {
+                    <DropDownPicker
+                    open={open}
+                    value={i.symbol}
+                    items={items}
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    setItems={setItems}
+                    />
+                })} */}
             </View>
         </View>
     )

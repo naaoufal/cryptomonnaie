@@ -1,22 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
-import { NativeRouter, Route, Switch } from 'react-router-native';
-import Login from './app/screens/login';
-import Home from './app/screens/home';
-import LogintoHome from './app/screens/logintoHome';
-//import firebaseConfig from './app/config';
+const express = require("express");
+const app = express();
+const port = 3000;
+const db = require("./models");
 
-//firebase.initializeApp(firebaseConfig);
+app.use(express.json());
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
-export default function App() {
-  return (
-    <NativeRouter>
-      <Switch>
-        <Route exact path="/" component={LogintoHome} />
-        <Route exact path="/Home" component={Home} />
-        <Route exact path="/Inscription" component={Login} />
-      </Switch>
-    </NativeRouter>
-  );
-}
+const userRoutes = require("./router/user");
+const walletRoutes = require("./router/wallet");
+
+app.use("/user", userRoutes);
+app.use("/wallet", walletRoutes);
+
+db.sequelize.sync().then((res) => {
+  app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`);
+  });
+});
