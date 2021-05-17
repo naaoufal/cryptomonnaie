@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 //import React, { Component } from 'react-native'
-import { Button, StyleSheet, Text, View, Dimensions, TextInput } from 'react-native';
+import { Button, StyleSheet, Text, View, Dimensions, TextInput, ScrollView } from 'react-native';
 import * as Google from "expo-google-app-auth";
 import Constants from 'expo-constants';
 const {height, width} = Dimensions.get('screen');
@@ -10,16 +10,21 @@ import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-ta
 import { useEffect } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
 import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav';
+import { DataTable } from 'react-native-paper';
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 
 export default function Home () {
 
-    const [coins, setCoins] = React.useState([])
-    const state = {
-        symbols : []
-    }
     let history = useHistory()
+    const [coins, setCoins] = React.useState([])
+    const [names, setNames] = React.useState([])
+    const state = {
+        HeadTable : ["ID", "Name", "Symbol", "PriceUsd", "Supply"],
+        DataTable : [
+            ['12', names, '3', '4', '5']
+        ]
+    }
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
 
@@ -31,8 +36,12 @@ export default function Home () {
         .then(res => {
             return res.json()
         })
-        .then(data => setState({symbols : data.symbol}))
+        .then(info => {
+            setNames(info.data)
+        })
     }
+
+    renderCoinData()
 
     // logOut function :
     function logOut () {
@@ -43,8 +52,6 @@ export default function Home () {
     }
 
     useEffect(() => {
-        //renderCoinData()
-        console.log(state)
     }, [])
 
     return (
@@ -59,24 +66,31 @@ export default function Home () {
             </NavButtonText>
             </NavButton>
             </NavBar>
+            <ScrollView style={styles.scrollView}>
             <View style={styles.container}>
-                {/* {coins.map((i) => {
-                    <DropDownPicker
-                    open={open}
-                    value={i.symbol}
-                    items={items}
-                    setOpen={setOpen}
-                    setValue={setValue}
-                    setItems={setItems}
-                    />
-                })} */}
+                {/* <Table borderStyle={{borderWidth: 1, borderColor: '#ffa1d2'}}>
+                    <Row data={state.HeadTable} style={styles.HeadStyle} textStyle={styles.TableText}/>
+                    <Rows data={names} textStyle={styles.TableText}/>
+                </Table> */}
+                {names.map((i) => (
+                    <Text style={styles.txt}>{i.rank} # {i.name} # {i.symbol} # {i.priceUsd}</Text>
+                ))}
             </View>
+            </ScrollView>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container : {  padding: 16, paddingTop: 30, backgroundColor: '#fff' },
+    container : {  padding: 16, paddingTop: 30, backgroundColor: '#fff', borderColor : 'black' },
     head: { height: 40, backgroundColor: '#f1f8ff' },
-    text: { margin: 6 }
+    text: { margin: 6 },
+    txt : {
+        color : 'black',
+        borderColor : "green",
+        borderWidth : 2,
+        padding : 15,
+        borderRadius : 8,
+        margin : 10
+    }
 });

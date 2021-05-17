@@ -26,6 +26,7 @@
     "react-native-login-twitter": "^3.0.4",
     "react-native-nav": "^2.0.2",
     "react-native-navbar": "^2.1.0",
+    "react-native-paper": "^4.8.1",
     "react-native-table-component": "^1.2.1",
     "react-native-web": "~0.13.12",
     "react-router-native": "^5.2.0"
