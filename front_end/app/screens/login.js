@@ -44,9 +44,7 @@ const Login = () => {
         secureTextEntry
         onChangeText={setPassword}
         />
-        <View
-        style={styles.con}
-        >
+        <View style={styles.con}>
           <Button 
           title="Inscription"
           style={styles.btn}

@@ -13,6 +13,7 @@ import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav';
 import { DataTable } from 'react-native-paper';
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
+import Modal from 'react-native-modal';
 
 export default function Home () {
 
@@ -27,6 +28,11 @@ export default function Home () {
     }
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
+    const [isModalVisible, setModalVisible] = useState(false);
+
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+    };
 
     var user = firebase.auth().currentUser;
     //console.log(user.email)
@@ -39,6 +45,10 @@ export default function Home () {
         .then(info => {
             setNames(info.data)
         })
+    }
+
+    function buyCoins (id) {
+        alert(id)
     }
 
     renderCoinData()
@@ -73,7 +83,15 @@ export default function Home () {
                     <Rows data={names} textStyle={styles.TableText}/>
                 </Table> */}
                 {names.map((i) => (
-                    <Text style={styles.txt}>{i.rank} # {i.name} # {i.symbol} # {i.priceUsd}</Text>
+                    <View>
+                        <Text style={styles.txt}>
+                            {i.rank} # {i.name} # {i.symbol} # {i.priceUsd} # {i.changePercent24Hr}
+                        </Text>
+                        <Button
+                        title={i.id}
+                        onPress={buyCoins(i.id)}
+                        />
+                    </View>
                 ))}
             </View>
             </ScrollView>
@@ -91,6 +109,7 @@ const styles = StyleSheet.create({
         borderWidth : 2,
         padding : 15,
         borderRadius : 8,
-        margin : 10
+        margin : 10,
+        backgroundColor : 'gray'
     }
 });

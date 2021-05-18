@@ -49,17 +49,15 @@ const LogintoHome = () => {
             secureTextEntry
             onChangeText={setPassword}
             />
-            <View
-            style={styles.con}
-            >
+            <View style={styles.con}>
                 <Button 
+                style={styles.btn1}
                 title="Se Connecter"
                 onPress={loginUser}
                 />
-            </View>
-
-            <View>
+                <Text></Text>
                 <Button
+                style={styles.btn2}
                 title="Inscription"
                 onPress={toInscription}
                 />
@@ -94,5 +92,6 @@ const styles = StyleSheet.create({
     },
     con : {
       paddingTop : 20,
-    },
+      padding : 20
+    }
 });
