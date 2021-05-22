@@ -5,6 +5,8 @@ import { NativeRouter, Route, Switch } from 'react-router-native';
 import Login from './app/screens/login';
 import Home from './app/screens/home';
 import LogintoHome from './app/screens/logintoHome';
+import Wallet from './app/screens/wallet'
+
 //import firebaseConfig from './app/config';
 
 //firebase.initializeApp(firebaseConfig);
@@ -16,6 +18,7 @@ export default function App() {
         <Route exact path="/" component={LogintoHome} />
         <Route exact path="/Home" component={Home} />
         <Route exact path="/Inscription" component={Login} />
+        <Route exact path="/Wallet" component={Wallet} />
       </Switch>
     </NativeRouter>
   );

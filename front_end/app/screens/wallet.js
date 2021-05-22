@@ -13,47 +13,34 @@ import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav';
 import { DataTable } from 'react-native-paper';
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
-import Modal from 'react-native-modal';
 
 export default function Home () {
 
     let history = useHistory()
-    const [coins, setCoins] = React.useState([])
-    const [names, setNames] = React.useState([])
-    const state = {
-        HeadTable : ["ID", "Name", "Symbol", "PriceUsd", "Supply"],
-        DataTable : [
-            ['12', names, '3', '4', '5']
-        ]
-    }
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
-    const [isModalVisible, setModalVisible] = useState(false);
-
-    const toggleModal = () => {
-        setModalVisible(!isModalVisible);
-    };
-
+    const [localCrncy, setLocalCrncy] = useState("")
+    const [solde, setSolde] = useState("")
     var user = firebase.auth().currentUser;
-    //console.log(user.email)
+    //console.log(user.uid)
 
-    function renderCoinData () {
-        fetch("http://api.coincap.io/v2/assets").then(res => {
+    function renderWalletData () {
+        fetch("http://192.168.1.137:8080/user/userWallet").then(res => {
             return res.json()
-        })
-        .then(info => {
-            setNames(info.data)
+        }).then(info => {
+            info.map(i => {
+                //console.log(i.f_uid)
+                if(i.f_uid == user.uid) {
+                    //console.log(i.localCrncy, i.solde)
+                    setLocalCrncy(i.localCrncy)
+                    setSolde(i.solde)
+                }
+            })
         })
     }
 
-    // function buyCoins (id) {
-    //     alert(id)
-    // }
+    renderWalletData()
 
-    renderCoinData()
-
-    function toWallet () {
-        history.push("/Wallet")
+    function toCoins () {
+        history.push("/Home")
     }
 
     // logOut function :
@@ -63,7 +50,7 @@ export default function Home () {
         })
         history.push("/")
     }
-
+console.log(localCrncy)
     useEffect(() => {
     }, [])
 
@@ -73,9 +60,9 @@ export default function Home () {
             <NavTitle>
             {user.email}
             </NavTitle>
-            <NavButton onPress={toWallet}>
+            <NavButton onPress={toCoins}>
                 <NavButtonText>
-                    {"My Wallet"}
+                    {"Coins"}
                 </NavButtonText>
             </NavButton>
             <NavButton onPress={logOut}>
@@ -84,16 +71,9 @@ export default function Home () {
             </NavButtonText>
             </NavButton>
             </NavBar>
-            <ScrollView style={styles.scrollView}>
-            <View style={styles.container}>
-                {names.map((i) => (
-                    <View>
-                        <Text style={styles.txt}>
-                            {i.rank} # {i.name} # {i.symbol} # {i.priceUsd} # {i.changePercent24Hr}
-                        </Text>
-                    </View>
-                ))}
-            </View>
+            <ScrollView style={styles.container}>
+                <Text>User ID : {user.uid}</Text>
+                <Text>Your Solde Is : {solde} {localCrncy}</Text>
             </ScrollView>
         </View>
     )

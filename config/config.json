@@ -1,7 +1,7 @@
 {
     "development": {
         "username": "postgres",
-        "password": "Azerty123",
+        "password": "azer",
         "database": "cryptoDB",
         "host": "127.0.0.1",
         "port": 5432,

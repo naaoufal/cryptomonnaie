@@ -9,6 +9,7 @@ const addWallet = async (req, res) => {
     const currencyValue = req.body.value;
 
     const user = await User.findOne({ id: idUser });
+    //console.log(user.solde)
     const newSolde = user.solde - currencyPrice;
 
     if (user.solde >= currencyPrice) {
