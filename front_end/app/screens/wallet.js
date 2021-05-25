@@ -39,6 +39,34 @@ export default function Home () {
 
     renderWalletData()
 
+    function createUserIfNotExist () {
+        fetch("http://192.168.1.137:8080/user/userWallet").then(res => {
+            return res.json()
+        }).then(info => {
+            //console.log(info)
+            info.map(i => {
+                if(user.uid != i.f_uid) {
+                    fetch(`http://192.168.1.137:8080/user/add/${user.uid}`, {
+                        method : 'POST',
+                        headers : {
+                            'Content-Type' : 'application/json'
+                        },
+                        body : JSON.stringify({
+                            f_uid : user.uid
+                        })
+                    }).then(res => {
+                        return res.json()
+                    }).then(data => {
+                        console.log(data)
+                    })
+                } else {
+                    console.log("Already Created")
+                }
+            })
+        })
+        //history.push("/Wallet")
+    }
+
     function toCoins () {
         history.push("/Home")
     }
@@ -50,8 +78,9 @@ export default function Home () {
         })
         history.push("/")
     }
-console.log(localCrncy)
+
     useEffect(() => {
+        createUserIfNotExist()
     }, [])
 
     return (

@@ -20,12 +20,6 @@ export default function Home () {
     let history = useHistory()
     const [coins, setCoins] = React.useState([])
     const [names, setNames] = React.useState([])
-    const state = {
-        HeadTable : ["ID", "Name", "Symbol", "PriceUsd", "Supply"],
-        DataTable : [
-            ['12', names, '3', '4', '5']
-        ]
-    }
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     const [isModalVisible, setModalVisible] = useState(false);
@@ -35,7 +29,7 @@ export default function Home () {
     };
 
     var user = firebase.auth().currentUser;
-    //console.log(user.email)
+    //console.log(user.uid)
 
     function renderCoinData () {
         fetch("http://api.coincap.io/v2/assets").then(res => {
@@ -51,9 +45,39 @@ export default function Home () {
     // }
 
     renderCoinData()
+    
 
     function toWallet () {
-        history.push("/Wallet")
+        fetch("http://192.168.1.137:8080/user/userWallet").then(res => {
+            return res.json()
+        }).then(info => {
+            //console.log(info)
+            info.map(i => {
+                //console.log(i.f_uid)
+                if(user.uid == i.f_uid){
+                    console.log(i)
+                    history.push("/Wallet")
+                } else {
+                    history.push("/Wallet")
+                }
+                // if(user.uid != i.f_uid) {
+                //     fetch(`http://192.168.1.137:8080/user/add/${user.uid}`, {
+                //         method : 'POST',
+                //         headers : {
+                //             'Content-Type' : 'application/json'
+                //         },
+                //         body : JSON.stringify({
+                //             f_uid : user.uid
+                //         })
+                //     }).then(res => {
+                //         history.push("/Wallet")
+                //     })
+                // } else {
+                //     history.push("/Wallet")
+                // }
+            })
+        })
+        //history.push("/Wallet")
     }
 
     // logOut function :
