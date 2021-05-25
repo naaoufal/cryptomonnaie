@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, Dimensions, StyleSheet, TouchableOpacity, Image,TextInput   } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import firebase from '../config'
+import { useHistory } from 'react-router';
+import { Text, View, Dimensions, StyleSheet, TouchableOpacity, Image,TextInput, ScrollView   } from 'react-native';
 import {
   LineChart,
   BarChart,
@@ -8,9 +10,12 @@ import {
   ContributionGraph,
   StackedBarChart
 } from "react-native-chart-kit";
+import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav';
 
 export default function Details (props) {
 
+    var user = firebase.auth().currentUser;
+    let history = useHistory()
     const [time, setTime] = useState([0,0]);
     const [price, setPrice] = useState([0,0]);
     const { id, name, symbol, changePercent24Hr } =
@@ -28,30 +33,63 @@ export default function Details (props) {
         fetch(`https://api.coincap.io/v2/assets/${id}/history?interval=d1`).then(res => {
             return res.json()
         }).then(i => {
-            console.log(i)
+            i.data.map(info => {
+                //console.log(info.priceUsd)
+            })
         })
     }
 
-    //getData()
+    function toHome () {
+        
+    }
+    // logOut function :
+    function logOut () {
+        firebase.signOut().then(() => {
+            console.log('user signed out');
+        })
+        history.push("/")
+    }
+
+    useEffect(() => {
+        getData()
+    }, [])
+    
 
     return (
-        <View  style={styles.container}>
-            <Text>this is a page details {id}</Text>
-            <View style={styles.listItem}>
-                <Image source={{uri: `https://assets.coincap.io/assets/icons/${symbol.toLowerCase()}@2x.png`}}  style={{width:40, height:40,borderRadius:30}} />
-                <View style={{justifyContent:"center",alignItems:"flex-start",flex:1,marginHorizontal: "5%"}}>
-                    <Text style={{fontWeight:"bold"}}>{name}</Text>
-                    <Text >{symbol}</Text>
-                </View>
-                <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
-                    <Text style={ 
-                    changePercent24Hr > 0
-                    ? { fontWeight:"bold", color: "green" }
-                    : { fontWeight:"bold", color: "red" }
-                    }>{parseFloat(changePercent24Hr).toFixed(2)} %</Text>
+        <ScrollView>
+            <NavBar>
+            <NavTitle>
+            {user.email}
+            </NavTitle>
+            <NavButton onPress={() => {history.push("/Home")}}>
+                <NavButtonText>
+                    {"Retour"}
+                </NavButtonText>
+            </NavButton>
+            <NavButton onPress={logOut}>
+            <NavButtonText>
+                {"Se Deconnecter"}
+            </NavButtonText>
+            </NavButton>
+            </NavBar>
+            <View  style={styles.container}>
+                <Text>this is a page details {id}</Text>
+                <View style={styles.listItem}>
+                    <Image source={{uri: `https://assets.coincap.io/assets/icons/${symbol.toLowerCase()}@2x.png`}}  style={{width:40, height:40,borderRadius:30}} />
+                    <View style={{justifyContent:"center",alignItems:"flex-start",flex:1,marginHorizontal: "5%"}}>
+                        <Text style={{fontWeight:"bold"}}>{name}</Text>
+                        <Text >{symbol}</Text>
+                    </View>
+                    <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
+                        <Text style={ 
+                        changePercent24Hr > 0
+                        ? { fontWeight:"bold", color: "green" }
+                        : { fontWeight:"bold", color: "red" }
+                        }>{parseFloat(changePercent24Hr).toFixed(2)} %</Text>
+                    </View>
                 </View>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
