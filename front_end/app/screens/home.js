@@ -1,29 +1,15 @@
 import React, { useState } from 'react'
-//import React, { Component } from 'react-native'
-import { Button, StyleSheet, Text, View, Dimensions, TextInput, ScrollView, Image } from 'react-native';
-import * as Google from "expo-google-app-auth";
-import Constants from 'expo-constants';
-const {height, width} = Dimensions.get('screen');
+import { Button, StyleSheet, Text, View, Dimensions, TextInput, ScrollView, Image, FlatList, TouchableOpacity } from 'react-native';
 import firebase from '../config'
 import { useHistory } from 'react-router';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import { useEffect } from 'react';
-import DropDownPicker from 'react-native-dropdown-picker';
 import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav';
 
 
 export default function Home () {
 
     let history = useHistory()
-    const [coins, setCoins] = React.useState([])
     const [names, setNames] = React.useState([])
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
-    const [isModalVisible, setModalVisible] = useState(false);
-
-    const toggleModal = () => {
-        setModalVisible(!isModalVisible);
-    };
 
     var user = firebase.auth().currentUser;
     //console.log(user.uid)
@@ -78,11 +64,6 @@ export default function Home () {
         //history.push("/Wallet")
     }
 
-    // get Graph function
-    function getGraph (rank) {
-        //console.log(rank)
-    }
-
     // logOut function :
     function logOut () {
         firebase.signOut().then(() => {
@@ -112,25 +93,23 @@ export default function Home () {
             </NavButton>
             </NavBar>
                 {names.map((i) => (
-                    <View style={styles.listItem}>
-                        <Image source={{uri: `https://assets.coincap.io/assets/icons/${i.symbol.toLowerCase()}@2x.png`}}  style={{width:40, height:40,borderRadius:30}} />
-                        <View style={{justifyContent:"center",alignItems:"flex-start",flex:1,marginHorizontal: "5%"}}>
-                            <Text style={{fontWeight:"bold"}}>{i.name}</Text>
-                            <Text >{i.symbol}</Text>
+                    <TouchableOpacity onPress={() => history.push('/Details', i)}>
+                        <View style={styles.listItem}>
+                            <Image source={{uri: `https://assets.coincap.io/assets/icons/${i.symbol.toLowerCase()}@2x.png`}}  style={{width:40, height:40,borderRadius:30}} />
+                            <View style={{justifyContent:"center",alignItems:"flex-start",flex:1,marginHorizontal: "5%"}}>
+                                <Text style={{fontWeight:"bold"}}>{i.name}</Text>
+                                <Text >{i.symbol}</Text>
+                            </View>
+                            <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
+                                <Text style={{fontWeight:"bold"}}>${parseFloat(i.priceUsd).toFixed(2)}</Text>
+                            </View>
+                            <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
+                                <Text style={{fontWeight:"bold"},
+                                i.changePercent24Hr > 0 ? {  color: "green" } : {  color: "red" } 
+                                }>{parseFloat(i.changePercent24Hr).toFixed(2)} %</Text>
+                            </View>
                         </View>
-                        <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
-                            <Text style={{fontWeight:"bold"}}>${parseFloat(i.priceUsd).toFixed(2)}</Text>
-                        </View>
-                        <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
-                            <Text style={{fontWeight:"bold"},
-                            
-                            i.changePercent24Hr > 0
-                                    ? {  color: "green" }
-                                    : {  color: "red" }
-                            
-                            }>{parseFloat(i.changePercent24Hr).toFixed(2)} %</Text>
-                        </View>
-                    </View>
+                    </TouchableOpacity>
                 ))}
         </ScrollView>
     )

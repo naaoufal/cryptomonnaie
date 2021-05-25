@@ -6,13 +6,8 @@ import Constants from 'expo-constants';
 const {height, width} = Dimensions.get('screen');
 import firebase from '../config'
 import { useHistory } from 'react-router';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import { useEffect } from 'react';
-import DropDownPicker from 'react-native-dropdown-picker';
 import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav';
-import { DataTable } from 'react-native-paper';
-import AddBox from "@material-ui/icons/AddBox";
-import ArrowDownward from "@material-ui/icons/ArrowDownward";
 
 export default function Home () {
 
