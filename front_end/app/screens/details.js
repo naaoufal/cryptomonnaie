@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import firebase from '../config'
 import { useHistory } from 'react-router';
+import Modal from 'react-native-modal';
 import { Text, View, Dimensions, StyleSheet, TouchableOpacity, Image,TextInput, ScrollView   } from 'react-native';
 import {
   LineChart,
@@ -11,13 +12,16 @@ import {
   StackedBarChart
 } from "react-native-chart-kit";
 import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav';
+import Svg, {Circle, Path, Rect} from 'react-native-svg';
+import { Button } from '@material-ui/core';
 
 export default function Details (props) {
 
     var user = firebase.auth().currentUser;
     let history = useHistory()
-    const [time, setTime] = useState([0,0]);
-    const [price, setPrice] = useState([0,0]);
+    const [data, setData] = React.useState([])
+    const [time, setTime] = React.useState([]);
+    const [price, setPrice] = React.useState([]);
     const { id, name, symbol, changePercent24Hr } =
     (props.location && props.location.state) || {};
 
@@ -32,16 +36,19 @@ export default function Details (props) {
     function getData () {
         fetch(`https://api.coincap.io/v2/assets/${id}/history?interval=d1`).then(res => {
             return res.json()
-        }).then(i => {
-            i.data.map(info => {
-                //console.log(info.priceUsd)
-            })
+        }).then(info => {
+            setData(info.data)
         })
+
+        const timeArr = data && data.map(i => convertTimeToDay(i.time))
+        const priceArr = data && data.map(i => i.priceUsd)
+        setTime(timeArr && timeArr.slice(-6))
+        setPrice(priceArr && priceArr.slice(-6))
+
     }
 
-    function toHome () {
-        
-    }
+    
+
     // logOut function :
     function logOut () {
         firebase.signOut().then(() => {
@@ -49,9 +56,10 @@ export default function Details (props) {
         })
         history.push("/")
     }
-
+console.log(time)
     useEffect(() => {
         getData()
+        
     }, [])
     
 
@@ -73,7 +81,6 @@ export default function Details (props) {
             </NavButton>
             </NavBar>
             <View  style={styles.container}>
-                <Text>this is a page details {id}</Text>
                 <View style={styles.listItem}>
                     <Image source={{uri: `https://assets.coincap.io/assets/icons/${symbol.toLowerCase()}@2x.png`}}  style={{width:40, height:40,borderRadius:30}} />
                     <View style={{justifyContent:"center",alignItems:"flex-start",flex:1,marginHorizontal: "5%"}}>
@@ -88,6 +95,49 @@ export default function Details (props) {
                         }>{parseFloat(changePercent24Hr).toFixed(2)} %</Text>
                     </View>
                 </View>
+                <LineChart
+                    data={{
+                        labels: ["January", "February", "March", "April", "May", "June"],
+                        datasets: [
+                        {
+                            data: [
+                            Math.random() * 100,
+                            Math.random() * 100,
+                            Math.random() * 100,
+                            Math.random() * 100,
+                            Math.random() * 100,
+                            Math.random() * 100
+                            ]
+                        }
+                        ]
+                    }}
+                    width={Dimensions.get("window").width} // from react-native
+                    height={220}
+                    yAxisLabel="$"
+                    yAxisSuffix="k"
+                    yAxisInterval={1} // optional, defaults to 1
+                    chartConfig={{
+                    backgroundColor: "#e26a00",
+                    backgroundGradientFrom: "#fb8c00",
+                    backgroundGradientTo: "#ffa726",
+                    decimalPlaces: 2, // optional, defaults to 2dp
+                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                    style: {
+                        borderRadius: 16
+                    },
+                    propsForDots: {
+                        r: "6",
+                        strokeWidth: "2",
+                        stroke: "#ffa726"
+                    }
+                    }}
+                    bezier
+                    style={{
+                    marginVertical: 8,
+                    borderRadius: 16
+                    }}
+                />
             </View>
         </ScrollView>
     )
@@ -142,15 +192,14 @@ const styles = StyleSheet.create({
       alignItems:'center'
     },
     appButtonContainer: {
-      elevation: 8,
-      backgroundColor: "#5000FF",
+      elevation: 1,
+      backgroundColor: "orange",
       borderRadius: 10,
       paddingVertical: 10,
-      paddingHorizontal: 12,
-      marginHorizontal: "1%",
-      marginBottom: 2,
+      paddingHorizontal: 0,
+      marginHorizontal: "4%",
       marginTop: 8,
-      minWidth: "48%",
+      minWidth: "30%",
     },
     appButtonText: {
       fontSize: 18,
@@ -188,8 +237,6 @@ const styles = StyleSheet.create({
       textTransform: "uppercase"
     },
     appButtonContainerNoBg2: {
-      
-      backgroundColor: "#2ecc71",
       borderRadius: 30,
       paddingVertical: 10,
       paddingHorizontal: 12,
