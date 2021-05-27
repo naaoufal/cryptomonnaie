@@ -35,15 +35,11 @@ export default function Home () {
             return res.json()
         }).then(info => {
             //console.log(info)
-            info.map(i => {
-                //console.log(i.f_uid)
-                if(user.uid == i.f_uid){
-                    console.log("kayn")
-                    //history.push("/Wallet")
-                } else {
-                    console.log("makaynch")
-                    //history.push("/Wallet")
+            var x = info.map(i => {
+                if(i.f_uid == user.uid && i.f_uid != undefined) {
+                    return i.f_uid
                 }
+                
                 // if(user.uid != i.f_uid) {
                 //     fetch(`http://192.168.8.91:8080/user/add/${user.uid}`, {
                 //         method : 'POST',
@@ -61,7 +57,26 @@ export default function Home () {
                 // } else {
                 //     history.push("/Wallet")
                 // }
+                
             })
+            
+            if(x.filter(Boolean).length > 0){
+                history.push("/Wallet")
+            } else {
+                fetch(`http://192.168.8.91:8080/user/add/${user.uid}`, {
+                        method : 'POST',
+                        headers : {
+                            'Content-Type' : 'application/json'
+                        },
+                        body : JSON.stringify({
+                            f_uid : user.uid
+                        })
+                    }).then(res => {
+                        return res.json()
+                    }).then(data => {
+                        history.push("/Wallet")
+                })
+            }
         })
         //history.push("/Wallet")
     }

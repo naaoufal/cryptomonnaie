@@ -18,7 +18,7 @@ export default function Home () {
     //console.log(user.uid)
 
     function renderWalletData () {
-        fetch("http://192.168.1.137:8080/user/userWallet").then(res => {
+        fetch("http://192.168.8.91:8080/user/userWallet").then(res => {
             return res.json()
         }).then(info => {
             info.map(i => {
@@ -33,34 +33,6 @@ export default function Home () {
     }
 
     renderWalletData()
-
-    // function createUserIfNotExist () {
-    //     fetch("http://192.168.11.104:8080/user/userWallet").then(res => {
-    //         return res.json()
-    //     }).then(info => {
-    //         //console.log(info)
-    //         info.map(i => {
-    //             if(user.uid != i.f_uid) {
-    //                 fetch(`http://192.168.11.104:8080/user/add/${user.uid}`, {
-    //                     method : 'POST',
-    //                     headers : {
-    //                         'Content-Type' : 'application/json'
-    //                     },
-    //                     body : JSON.stringify({
-    //                         f_uid : user.uid
-    //                     })
-    //                 }).then(res => {
-    //                     return res.json()
-    //                 }).then(data => {
-    //                     console.log(data)
-    //                 })
-    //             } else {
-    //                 console.log("Already Created")
-    //             }
-    //         })
-    //     })
-    //     //history.push("/Wallet")
-    // }
 
     function toCoins () {
         history.push("/Home")
@@ -96,8 +68,12 @@ export default function Home () {
             </NavButton>
             </NavBar>
             <ScrollView style={styles.container}>
-                <Text>User ID : {user.uid}</Text>
-                <Text>Your Solde Is : {solde} {localCrncy}</Text>
+                <View style={styles.listItem}>
+                    <Text>User ID : {user.uid}</Text>
+                </View>
+                <View style={styles.listItem}>
+                    <Text>Your Solde Is : {solde} {localCrncy}</Text>
+                </View> 
             </ScrollView>
         </View>
     )
@@ -115,5 +91,24 @@ const styles = StyleSheet.create({
         borderRadius : 8,
         margin : 10,
         backgroundColor : 'gray'
-    }
+    },
+    listItem:{
+        margin:10,
+        padding:10,
+        backgroundColor:"#FFF",
+        width:"90%",
+        flex:1,
+        alignSelf:"center",
+        flexDirection:"row",
+        borderRadius:5,
+        elevation: 3,
+        shadowOffset: { width: 1 , height:1},
+        shadowColor: "#333",
+        shadowOpacity: 0.2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        
+    
+    },
+
 });
