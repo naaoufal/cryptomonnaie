@@ -22,31 +22,28 @@ const Login = () => {
     firebase.auth().createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       // Signed in 
-
       var user = userCredential.user;
-      console.log(user)
-      history.push('/LogintoHome')
-      //console.log(userCredential.user.firstname);
-      // ...
+      //history.push('/LogintoHome')
+      //console.log(user)
     })
   }
     return (
       <View style={styles.container}>
-        <Text style={styles.head}>Inscription : </Text>
+        <Text style={styles.head}>Registration : </Text>
         <TextInput
         style={styles.inp}
-        placeholder={"Enter Votre Email"}
+        placeholder={"Enter Your Email"}
         onChangeText={setEmail}
         />
         <TextInput
         style={styles.inp}
-        placeholder={"Enter Votre Password"}
+        placeholder={"Enter Your Password"}
         secureTextEntry
         onChangeText={setPassword}
         />
         <View style={styles.con}>
           <Button 
-          title="Inscription"
+          title="Registre"
           style={styles.btn}
           onPress={authEmail}
           />
@@ -67,8 +64,12 @@ const styles = StyleSheet.create({
   head : {
     fontSize : 40
   },
+  Button : {
+    borderRadius : 10
+  },
   inp : {
     width : width / 1.2,
+    borderRadius : 10,
     marginTop : 100,
     padding : 40,
     borderColor : "black",

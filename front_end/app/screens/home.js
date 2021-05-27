@@ -39,25 +39,6 @@ export default function Home () {
                 if(i.f_uid == user.uid && i.f_uid != undefined) {
                     return i.f_uid
                 }
-                
-                // if(user.uid != i.f_uid) {
-                //     fetch(`http://192.168.8.91:8080/user/add/${user.uid}`, {
-                //         method : 'POST',
-                //         headers : {
-                //             'Content-Type' : 'application/json'
-                //         },
-                //         body : JSON.stringify({
-                //             f_uid : user.uid
-                //         })
-                //     }).then(res => {
-                //         return res.json()
-                //     }).then(data => {
-                //         history.push("/Wallet")
-                //     })
-                // } else {
-                //     history.push("/Wallet")
-                // }
-                
             })
             
             if(x.filter(Boolean).length > 0){
