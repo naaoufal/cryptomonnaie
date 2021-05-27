@@ -36,14 +36,14 @@ export default function Details (props) {
     }
 
     function clickMe () {
-      fetch("http://192.168.1.137:8080/user/userWallet").then(res => {
+      fetch("http://192.168.8.91:8080/user/userWallet").then(res => {
         return res.json()
       }).then(data => {
         data.map(i => {
           if(i.f_uid == user.uid){
             //console.log(i)
             //console.log(i.id+" "+name+" "+val+" "+val*priceUsd)
-            fetch("http://192.168.1.137:8080/wallet/add", {
+            fetch("http://192.168.8.91:8080/wallet/add", {
               method : 'POST',
               headers : {
                 'Accept': 'application/json',
@@ -67,15 +67,47 @@ export default function Details (props) {
       })
     }
 
+    function sellCurr () {
+      fetch("http://192.168.8.91:8080/user/userWallet").then(res => {
+        return res.json()
+      }).then(data => {
+        data.map(i => {
+          if(i.f_uid == user.uid){
+            //console.log(i)
+            console.log(i.id+" "+name+" "+val+" "+val*priceUsd)
+            fetch("http://192.168.8.91:8080/wallet/sell", {
+              method : 'POST',
+              headers : {
+                'Accept': 'application/json',
+                'Content-Type' : 'application/json'
+              },
+              body : JSON.stringify({
+                idUser : i.id.toString(),
+                id_user : i.id.toString(),
+                currencyName : name,
+                currencyPrice : val*priceUsd,
+                value : parseFloat(val)
+              })
+            }).then(res => {
+              return res.json()
+            }).then(info => {
+              alert("Done")
+              history.push("/Home")
+            })
+          }
+        })
+      })
+    }
+
     function renderData () {
-        fetch("http://192.168.1.137:8080/user/userWallet").then(res => {
+        fetch("http://192.168.8.91:8080/user/userWallet").then(res => {
           return res.json()
         }).then(data => {
           data.map(i => {
             if(i.f_uid == user.uid){
               setPrice(i.solde)
               //console.log(i)
-              fetch("http://192.168.1.137:8080/wallet/allWallet").then(res => {
+              fetch("http://192.168.8.91:8080/wallet/allWallet").then(res => {
                 return res.json()
               }).then(info => {
                 info.map(o => {
@@ -172,7 +204,7 @@ export default function Details (props) {
                 </View>
                 <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
                     <Text style={styles.txt} onPress={clickMe}>Buy</Text>
-                    <Text style={styles.txt}>Sell</Text>
+                    <Text style={styles.txt} onPress={sellCurr}>Sell</Text>
                 </View>
                 {/* <LineChart
                     data={{

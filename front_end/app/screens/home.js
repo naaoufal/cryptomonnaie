@@ -31,7 +31,7 @@ export default function Home () {
     
 
     function toWallet () {
-        fetch("http://192.168.11.104:8080/user/userWallet").then(res => {
+        fetch("http://192.168.8.91:8080/user/userWallet").then(res => {
             return res.json()
         }).then(info => {
             //console.log(info)
@@ -39,13 +39,13 @@ export default function Home () {
                 //console.log(i.f_uid)
                 if(user.uid == i.f_uid){
                     console.log("kayn")
-                    history.push("/Wallet")
+                    //history.push("/Wallet")
                 } else {
                     console.log("makaynch")
-                    history.push("/Wallet")
+                    //history.push("/Wallet")
                 }
                 // if(user.uid != i.f_uid) {
-                //     fetch(`http://192.168.1.137:8080/user/add/${user.uid}`, {
+                //     fetch(`http://192.168.8.91:8080/user/add/${user.uid}`, {
                 //         method : 'POST',
                 //         headers : {
                 //             'Content-Type' : 'application/json'
@@ -54,6 +54,8 @@ export default function Home () {
                 //             f_uid : user.uid
                 //         })
                 //     }).then(res => {
+                //         return res.json()
+                //     }).then(data => {
                 //         history.push("/Wallet")
                 //     })
                 // } else {
@@ -73,6 +75,7 @@ export default function Home () {
     }
 
     useEffect(() => {
+        //toWallet()
     }, [])
 
     return (
