@@ -1,6 +1,16 @@
 const { Wallet } = require("../models");
 const { User } = require("../models");
 
+const findUsersWallet = async (req, res) => {
+  try {
+      await Wallet.findAll().then(data => {
+          res.send(data)
+      })
+  } catch (error) {
+      res.json(error)
+  }
+}
+
 const addWallet = async (req, res) => {
   try {
     const idUser = req.body.id;
@@ -123,4 +133,4 @@ const findWallet = async (req, res) => {
   }
 };
 
-module.exports = { addWallet, sellCrypto, allWallet, findWallet };
+module.exports = { findUsersWallet, addWallet, sellCrypto, allWallet, findWallet };

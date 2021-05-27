@@ -20,9 +20,11 @@ export default function Details (props) {
     var user = firebase.auth().currentUser;
     let history = useHistory()
     const [data, setData] = React.useState([])
-    const [time, setTime] = React.useState([]);
-    const [price, setPrice] = React.useState([]);
-    const { id, name, symbol, changePercent24Hr } =
+    const [time, setTime] = React.useState([])
+    const [price, setPrice] = React.useState("")
+    const [val, setCurrVal] = React.useState("")
+    const [value, setValue] = React.useState("0")
+    const { id, name, symbol, changePercent24Hr, priceUsd } =
     (props.location && props.location.state) || {};
 
     const convertTimeToDay =  (time) => {             
@@ -31,6 +33,63 @@ export default function Details (props) {
         var dayOfWeek = days[a.getDay()]
         //console.log(dayOfWeek);
         return dayOfWeek
+    }
+
+    function clickMe () {
+      fetch("http://192.168.1.137:8080/user/userWallet").then(res => {
+        return res.json()
+      }).then(data => {
+        data.map(i => {
+          if(i.f_uid == user.uid){
+            //console.log(i)
+            //console.log(i.id+" "+name+" "+val+" "+val*priceUsd)
+            fetch("http://192.168.1.137:8080/wallet/add", {
+              method : 'POST',
+              headers : {
+                'Accept': 'application/json',
+                'Content-Type' : 'application/json'
+              },
+              body : JSON.stringify({
+                id : i.id.toString(),
+                id_user : i.id.toString(),
+                cryp_name : name,
+                currencyPrice : val*priceUsd,
+                value : parseFloat(val)
+              })
+            }).then(res => {
+              return res.json()
+            }).then(info => {
+              alert("Done")
+              history.push("/Home")
+            })
+          }
+        })
+      })
+    }
+
+    function renderData () {
+        fetch("http://192.168.1.137:8080/user/userWallet").then(res => {
+          return res.json()
+        }).then(data => {
+          data.map(i => {
+            if(i.f_uid == user.uid){
+              setPrice(i.solde)
+              //console.log(i)
+              fetch("http://192.168.1.137:8080/wallet/allWallet").then(res => {
+                return res.json()
+              }).then(info => {
+                info.map(o => {
+                  if(o.id_user == i.id){
+                    if(o.cryp_name.toLowerCase() == name.toLowerCase()) {
+                      //console.log(o)
+                      setValue(o.value)
+                    }
+                  }
+                })
+              })
+            }
+          })
+        })
     }
 
     function getData () {
@@ -56,10 +115,11 @@ export default function Details (props) {
         })
         history.push("/")
     }
-console.log(time)
+
     useEffect(() => {
-        getData()
-        
+      getData()
+      renderData()
+      console.log(user.uid)
     }, [])
     
 
@@ -84,8 +144,11 @@ console.log(time)
                 <View style={styles.listItem}>
                     <Image source={{uri: `https://assets.coincap.io/assets/icons/${symbol.toLowerCase()}@2x.png`}}  style={{width:40, height:40,borderRadius:30}} />
                     <View style={{justifyContent:"center",alignItems:"flex-start",flex:1,marginHorizontal: "5%"}}>
-                        <Text style={{fontWeight:"bold"}}>{name}</Text>
-                        <Text >{symbol}</Text>
+                      <Text style={{fontWeight:"bold"}}>{name}</Text>
+                      <Text >{symbol}</Text>
+                    </View>
+                    <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
+                      <Text style={{fontWeight:"bold"}}>${parseFloat(priceUsd).toFixed(2)}</Text>
                     </View>
                     <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
                         <Text style={ 
@@ -95,7 +158,23 @@ console.log(time)
                         }>{parseFloat(changePercent24Hr).toFixed(2)} %</Text>
                     </View>
                 </View>
-                <LineChart
+                <View style={styles.listItem}>
+                  <Text style={{fontWeight:"bold"}}>My Solde Is : {price}</Text>
+                </View>
+                <View style={styles.listItem}>
+                  <Text style={{fontWeight:"bold"}}>How Many {name} Currency You Have : {value}</Text>
+                </View>
+                <View style={styles.listItem}>
+                    <TextInput
+                    placeholder={"Enter The Value of Currency you Want to Buy"}
+                    onChangeText={setCurrVal}
+                    />
+                </View>
+                <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
+                    <Text style={styles.txt} onPress={clickMe}>Buy</Text>
+                    <Text style={styles.txt}>Sell</Text>
+                </View>
+                {/* <LineChart
                     data={{
                         labels: ["January", "February", "March", "April", "May", "June"],
                         datasets: [
@@ -137,7 +216,7 @@ console.log(time)
                     marginVertical: 8,
                     borderRadius: 16
                     }}
-                />
+                /> */}
             </View>
         </ScrollView>
     )
@@ -152,6 +231,18 @@ const styles = StyleSheet.create({
       alignItems: "center",
       
     },
+    txt : {
+        fontSize : 26,
+        elevation: 1,
+        color : 'white',
+        backgroundColor: "orange",
+        borderRadius: 8,
+        paddingVertical: 8,
+        paddingHorizontal: 60,
+        marginHorizontal: "4%",
+        marginTop: 8,
+        minWidth: "30%",
+    },  
     listItem:{
       margin:10,
       padding:10,
