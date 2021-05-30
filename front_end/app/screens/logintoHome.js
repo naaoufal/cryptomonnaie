@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import { Button, StyleSheet, Text, View, Dimensions, TextInput } from 'react-native';
-import * as Google from "expo-google-app-auth";
-import Constants from 'expo-constants';
 const {height, width} = Dimensions.get('screen');
 import firebase from '../config'
 import { useHistory } from 'react-router';
@@ -15,7 +13,7 @@ const LogintoHome = () => {
       history.push("/Inscription")
     }
 
-    let loginUser = () => {
+    function loginUser () {
 
         firebase.auth().signInWithEmailAndPassword(email, password)
           .then((userCredential) => {

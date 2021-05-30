@@ -5,7 +5,6 @@ import { useHistory } from 'react-router';
 import { useEffect } from 'react';
 import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav';
 
-
 export default function Home () {
 
     let history = useHistory()
@@ -65,9 +64,8 @@ export default function Home () {
     // logOut function :
     function logOut () {
         firebase.signOut().then(() => {
-            console.log('user signed out');
+            history.push("/")
         })
-        history.push("/")
     }
 
     useEffect(() => {

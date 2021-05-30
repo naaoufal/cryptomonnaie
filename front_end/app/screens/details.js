@@ -19,12 +19,12 @@ export default function Details (props) {
 
     var user = firebase.auth().currentUser;
     let history = useHistory()
-    const [data, setData] = React.useState([])
+    const [data, setData] = React.useState("")
     const [time, setTime] = React.useState([])
-    const [price, setPrice] = React.useState("")
+    const [price, setPrice] = React.useState([])
     const [val, setCurrVal] = React.useState("")
     const [value, setValue] = React.useState("0")
-    const { id, name, symbol, changePercent24Hr, priceUsd } =
+    const { id, name, symbol, changePercent24Hr, priceUsd, localCrncy } =
     (props.location && props.location.state) || {};
 
     const convertTimeToDay =  (time) => {             
@@ -74,7 +74,7 @@ export default function Details (props) {
         data.map(i => {
           if(i.f_uid == user.uid){
             //console.log(i)
-            console.log(i.id+" "+name+" "+val+" "+val*priceUsd)
+            //console.log(i.id+" "+name+" "+val+" "+val*priceUsd)
             fetch("http://192.168.8.91:8080/wallet/sell", {
               method : 'POST',
               headers : {
@@ -125,33 +125,32 @@ export default function Details (props) {
     }
 
     function getData () {
-        fetch(`https://api.coincap.io/v2/assets/${id}/history?interval=d1`).then(res => {
-            return res.json()
-        }).then(info => {
-            setData(info.data)
-        })
+        
+      fetch(`https://api.coincap.io/v2/assets/${id}/history?interval=d1`).then(res => {
+        return res.json()
+      }).then(i => {
+        setData(i.data)
+      })
 
-        const timeArr = data && data.map(i => convertTimeToDay(i.time))
-        const priceArr = data && data.map(i => i.priceUsd)
-        setTime(timeArr && timeArr.slice(-6))
-        setPrice(priceArr && priceArr.slice(-6))
-
+      data && data.map(i => {
+        setPrice( i.priceUsd && i.priceUsd.slice(-6))
+      })
     }
-
-    
 
     // logOut function :
     function logOut () {
         firebase.signOut().then(() => {
             console.log('user signed out');
-        })
-        history.push("/")
+            history.push("/")
+        }) 
     }
 
+    console.log(price)
+
     useEffect(() => {
-      getData()
+      
       renderData()
-      console.log(user.uid)
+      getData()
     }, [])
     
 
@@ -191,7 +190,7 @@ export default function Details (props) {
                     </View>
                 </View>
                 <View style={styles.listItem}>
-                  <Text style={{fontWeight:"bold"}}>My Solde Is : {price}</Text>
+                  <Text style={{fontWeight:"bold"}}>My Solde Is : {price} USD</Text>
                 </View>
                 <View style={styles.listItem}>
                   <Text style={{fontWeight:"bold"}}>How Many {name} Currency You Have : {value}</Text>

@@ -42,8 +42,9 @@ export default function Home () {
     function logOut () {
         firebase.signOut().then(() => {
             console.log('user signed out');
+            history.push("/")
         })
-        history.push("/")
+        
     }
 
     useEffect(() => {
