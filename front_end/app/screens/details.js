@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios';
 import firebase from '../config'
 import { useHistory } from 'react-router';
 import Modal from 'react-native-modal';
@@ -19,9 +20,10 @@ export default function Details (props) {
 
     var user = firebase.auth().currentUser;
     let history = useHistory()
-    const [data, setData] = React.useState("")
-    const [time, setTime] = React.useState([])
-    const [price, setPrice] = React.useState([])
+    //const [data, setData] = React.useState("")
+    const [solde, setSolde] = React.useState([])
+    const [time, setTime] = React.useState([0,0])
+    const [priceRe, setPrice] = React.useState([0,0])
     const [val, setCurrVal] = React.useState("")
     const [value, setValue] = React.useState("0")
     const { id, name, symbol, changePercent24Hr, priceUsd, localCrncy } =
@@ -36,14 +38,14 @@ export default function Details (props) {
     }
 
     function clickMe () {
-      fetch("http://192.168.8.91:8080/user/userWallet").then(res => {
+      fetch("http://192.168.1.186:8080/user/userWallet").then(res => {
         return res.json()
       }).then(data => {
         data.map(i => {
           if(i.f_uid == user.uid){
             //console.log(i)
             //console.log(i.id+" "+name+" "+val+" "+val*priceUsd)
-            fetch("http://192.168.8.91:8080/wallet/add", {
+            fetch("http://192.168.1.186:8080/wallet/add", {
               method : 'POST',
               headers : {
                 'Accept': 'application/json',
@@ -68,14 +70,14 @@ export default function Details (props) {
     }
 
     function sellCurr () {
-      fetch("http://192.168.8.91:8080/user/userWallet").then(res => {
+      fetch("http://192.168.1.186:8080/user/userWallet").then(res => {
         return res.json()
       }).then(data => {
         data.map(i => {
           if(i.f_uid == user.uid){
             //console.log(i)
             //console.log(i.id+" "+name+" "+val+" "+val*priceUsd)
-            fetch("http://192.168.8.91:8080/wallet/sell", {
+            fetch("http://192.168.1.186:8080/wallet/sell", {
               method : 'POST',
               headers : {
                 'Accept': 'application/json',
@@ -100,14 +102,14 @@ export default function Details (props) {
     }
 
     function renderData () {
-        fetch("http://192.168.8.91:8080/user/userWallet").then(res => {
+        fetch("http://192.168.1.186:8080/user/userWallet").then(res => {
           return res.json()
         }).then(data => {
           data.map(i => {
             if(i.f_uid == user.uid){
-              setPrice(i.solde)
+              setSolde(i.solde)
               //console.log(i)
-              fetch("http://192.168.8.91:8080/wallet/allWallet").then(res => {
+              fetch("http://192.168.1.186:8080/wallet/allWallet").then(res => {
                 return res.json()
               }).then(info => {
                 info.map(o => {
@@ -124,33 +126,35 @@ export default function Details (props) {
         })
     }
 
-    function getData () {
+    async function getData () {
         
-      fetch(`https://api.coincap.io/v2/assets/${id}/history?interval=d1`).then(res => {
+      const response = await fetch(`https://api.coincap.io/v2/assets/${id}/history?interval=d1`).then(res => {
         return res.json()
-      }).then(i => {
-        setData(i.data)
       })
+        
+      const dataFull = response.data
+      //console.log(dataFull)
+      const timeArr = dataFull && dataFull.map(i => convertTimeToDay(i.time))
+      const priceArr = dataFull && dataFull.map(i => i.priceUsd)
+      setTime(timeArr && timeArr.slice(-6))
+      setPrice(priceArr && priceArr.slice(-6))
 
-      data && data.map(i => {
-        setPrice( i.priceUsd && i.priceUsd.slice(-6))
-      })
+      
     }
 
     // logOut function :
     function logOut () {
         firebase.signOut().then(() => {
-            console.log('user signed out');
-            history.push("/")
+          console.log('user signed out');
+          //history.push("/")
         }) 
     }
 
-    console.log(price)
+    //console.log(time)
 
     useEffect(() => {
-      
-      renderData()
       getData()
+      renderData()
     }, [])
     
 
@@ -171,7 +175,7 @@ export default function Details (props) {
             </NavButtonText>
             </NavButton>
             </NavBar>
-            <View  style={styles.container}>
+            <View style={styles.container}>
                 <View style={styles.listItem}>
                     <Image source={{uri: `https://assets.coincap.io/assets/icons/${symbol.toLowerCase()}@2x.png`}}  style={{width:40, height:40,borderRadius:30}} />
                     <View style={{justifyContent:"center",alignItems:"flex-start",flex:1,marginHorizontal: "5%"}}>
@@ -190,7 +194,7 @@ export default function Details (props) {
                     </View>
                 </View>
                 <View style={styles.listItem}>
-                  <Text style={{fontWeight:"bold"}}>My Solde Is : {price} USD</Text>
+                  <Text style={{fontWeight:"bold"}}>My Solde Is : {solde} USD</Text>
                 </View>
                 <View style={styles.listItem}>
                   <Text style={{fontWeight:"bold"}}>How Many {name} Currency You Have : {value}</Text>
@@ -205,49 +209,42 @@ export default function Details (props) {
                     <Text style={styles.txt} onPress={clickMe}>Buy</Text>
                     <Text style={styles.txt} onPress={sellCurr}>Sell</Text>
                 </View>
-                {/* <LineChart
-                    data={{
-                        labels: ["January", "February", "March", "April", "May", "June"],
-                        datasets: [
-                        {
-                            data: [
-                            Math.random() * 100,
-                            Math.random() * 100,
-                            Math.random() * 100,
-                            Math.random() * 100,
-                            Math.random() * 100,
-                            Math.random() * 100
-                            ]
-                        }
-                        ]
-                    }}
-                    width={Dimensions.get("window").width} // from react-native
-                    height={220}
-                    yAxisLabel="$"
-                    yAxisSuffix="k"
-                    yAxisInterval={1} // optional, defaults to 1
-                    chartConfig={{
-                    backgroundColor: "#e26a00",
-                    backgroundGradientFrom: "#fb8c00",
-                    backgroundGradientTo: "#ffa726",
-                    decimalPlaces: 2, // optional, defaults to 2dp
-                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    style: {
-                        borderRadius: 16
-                    },
-                    propsForDots: {
-                        r: "6",
-                        strokeWidth: "2",
-                        stroke: "#ffa726"
+                <LineChart
+                data={{
+                  labels: time,
+                  datasets: [
+                    {
+                      data : priceRe
                     }
-                    }}
-                    bezier
-                    style={{
-                    marginVertical: 8,
+                  ]
+                }}
+                width={Dimensions.get("window").width} // from react-native
+                height={500}
+                yAxisLabel="$"
+                yAxisSuffix="k"
+                yAxisInterval={1} // optional, defaults to 1
+                chartConfig={{
+                  backgroundColor: "#FFF",
+                  backgroundGradientFrom: "#FFF",
+                  backgroundGradientTo: "#FFF",
+                  decimalPlaces: 2, // optional, defaults to 2dp
+                  color: (opacity = 1) => `rgba(0,82,212, ${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(0,82,212, ${opacity})`,
+                  style: {
                     borderRadius: 16
-                    }}
-                /> */}
+                  },
+                  propsForDots: {
+                    r: "6",
+                    strokeWidth: "2",
+                    stroke: "#0052D4"
+                  }
+                }}
+                bezier
+                style={{
+                  marginVertical: 8,
+                  borderRadius: 16
+                }}
+              />
             </View>
         </ScrollView>
     )

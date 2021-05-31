@@ -30,7 +30,7 @@ export default function Home () {
     
 
     function toWallet () {
-        fetch("http://192.168.8.91:8080/user/userWallet").then(res => {
+        fetch("http://192.168.1.186:8080/user/userWallet").then(res => {
             return res.json()
         }).then(info => {
             //console.log(info)
@@ -43,7 +43,7 @@ export default function Home () {
             if(x.filter(Boolean).length > 0){
                 history.push("/Wallet")
             } else {
-                fetch(`http://192.168.8.91:8080/user/add/${user.uid}`, {
+                fetch(`http://192.168.1.186:8080/user/add/${user.uid}`, {
                         method : 'POST',
                         headers : {
                             'Content-Type' : 'application/json'
@@ -90,7 +90,7 @@ export default function Home () {
             </NavButton>
             </NavBar>
                 {names.map((i) => (
-                    <TouchableOpacity onPress={() => history.push('/Details', i)}>
+                    <TouchableOpacity onPress={() => history.push('/Details', i)} key={i.id}>
                         <View style={styles.listItem}>
                             <Image source={{uri: `https://assets.coincap.io/assets/icons/${i.symbol.toLowerCase()}@2x.png`}}  style={{width:40, height:40,borderRadius:30}} />
                             <View style={{justifyContent:"center",alignItems:"flex-start",flex:1,marginHorizontal: "5%"}}>
