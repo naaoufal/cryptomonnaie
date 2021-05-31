@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
         fontSize : 26,
         elevation: 1,
         color : 'white',
-        backgroundColor: "orange",
+        backgroundColor: "dodgerblue",
         borderRadius: 8,
         paddingVertical: 8,
         paddingHorizontal: 60,
