@@ -18,7 +18,7 @@ export default function Home () {
     //console.log(user.uid)
 
     function renderWalletData () {
-        fetch("http://192.168.1.186:8080/user/userWallet").then(res => {
+        fetch("http://192.168.8.91:8080/user/userWallet").then(res => {
             return res.json()
         }).then(info => {
             info.map(i => {

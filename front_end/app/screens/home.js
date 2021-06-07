@@ -30,7 +30,7 @@ export default function Home () {
     
 
     function toWallet () {
-        fetch("http://192.168.1.186:8080/user/userWallet").then(res => {
+        fetch("http://192.168.8.91:8080/user/userWallet").then(res => {
             return res.json()
         }).then(info => {
             //console.log(info)
@@ -43,7 +43,7 @@ export default function Home () {
             if(x.filter(Boolean).length > 0){
                 history.push("/Wallet")
             } else {
-                fetch(`http://192.168.1.186:8080/user/add/${user.uid}`, {
+                fetch(`http://192.168.8.91:8080/user/add/${user.uid}`, {
                         method : 'POST',
                         headers : {
                             'Content-Type' : 'application/json'
